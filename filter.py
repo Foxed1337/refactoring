@@ -49,12 +49,13 @@ def get_filtered_array(array: np.ndarray, arr_height: int, arr_width: int, pixel
                 dy = arr_height - i
             else:
                 dy = pixel_height
-           
+
             array[i:i + dy, j:j + dx] = int(array[i:i + dy, j:j + dx].sum() / 3 // (dy * dx)) // gray_step * gray_step
     return array
 
 
-img = Image.open("img2.jpg")
+print("Введите путь до файла: ")
+img = Image.open(input())
 arr = np.array(img)
 arr_height = len(arr)
 arr_width = len(arr[1])
