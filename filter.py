@@ -1,6 +1,7 @@
-from PIL import Image
-import numpy as np
 import math
+
+import numpy as np
+from PIL import Image
 
 
 def get_size_from_input(input_parameters: str, img_width: int, img_height: int):
@@ -37,27 +38,19 @@ def get_size_from_input(input_parameters: str, img_width: int, img_height: int):
 
 
 def get_filtered_array(array: np.ndarray, arr_height: int, arr_width: int, pixel_height, pixel_width, gray_step):
-    i = 0
-    while i < arr_height:
-        j = 0
-        while j < arr_width:
-            pixel_sum = 0
-            pixel_bottom_border = arr_height if (i + pixel_height) > arr_height else i + pixel_height
-            pixel_right_border = arr_width if (j + pixel_width) > arr_width else j + pixel_width
+    for i in range(0, arr_height, pixel_height):
+        for j in range(0, arr_width, pixel_width):
+            if j + pixel_width > arr_width:
+                dx = arr_width - j
+            else:
+                dx = pixel_width
 
-            for n in range(i, pixel_bottom_border):
-                for k in range(j, pixel_right_border):
-                    r, g, b = array[n][k]
-                    median = (int(r) + int(g) + int(b)) / 3
-                    pixel_sum += median
-            pixel_sum = int(
-                int(pixel_sum // ((pixel_bottom_border - i) * (pixel_right_border - j))) // gray_step) * gray_step
-
-            for n in range(i, pixel_bottom_border):
-                for k in range(j, pixel_right_border):
-                    array[n][k] = [pixel_sum, pixel_sum, pixel_sum]
-            j += pixel_width
-        i += pixel_height
+            if i + pixel_height > arr_height:
+                dy = arr_height - i
+            else:
+                dy = pixel_height
+           
+            array[i:i + dy, j:j + dx] = int(array[i:i + dy, j:j + dx].sum() / 3 // (dy * dx)) // gray_step * gray_step
     return array
 
 
